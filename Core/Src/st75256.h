@@ -47,6 +47,9 @@ public:
 		write_cmd(0xd7);
 		write_dat(0x9f); // auto read disable
 
+
+#if 0
+
 		write_cmd(0x32); // analog set, booster freq and bias ratio
 		write_dat(0x00);
 		write_dat(0x01);
@@ -69,6 +72,7 @@ public:
 		write_dat(0x1b);
 		write_dat(0x1d);
 		write_dat(0x1f);
+#endif
 
 		write_cmd(0x30); /* select 00 commands */
 
@@ -105,7 +109,7 @@ public:
 		delay(1);
 		write_cmd(0xaf); // disp on
 
-		write_cmd(0xa7); // inverse
+		//write_cmd(0xa7); // inverse
 
 
 #if 0
@@ -130,6 +134,7 @@ extern "C" {
 #endif
 
 void lcd_init(void);
+void lcd_active250(void);
 
 #ifdef __cplusplus
 }

@@ -111,7 +111,9 @@ int main(void)
   {
 	  HAL_GPIO_TogglePin(led_GPIO_Port,led_Pin);
 
-	  HAL_Delay(50);
+	  HAL_Delay(1000);
+
+	  lcd_active250();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -250,15 +252,15 @@ static void MX_SPI6_Init(void)
   hspi6.Init.Mode = SPI_MODE_MASTER;
   hspi6.Init.Direction = SPI_DIRECTION_2LINES_TXONLY;
   hspi6.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi6.Init.CLKPolarity = SPI_POLARITY_HIGH;
-  hspi6.Init.CLKPhase = SPI_PHASE_2EDGE;
+  hspi6.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi6.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi6.Init.NSS = SPI_NSS_SOFT;
   hspi6.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi6.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi6.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi6.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi6.Init.CRCPolynomial = 0x7;
-  hspi6.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  hspi6.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
   hspi6.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
   hspi6.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
   hspi6.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
