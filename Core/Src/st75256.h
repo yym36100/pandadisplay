@@ -97,7 +97,7 @@ public:
 
 		write_cmd(0x81); // ev control set vop
 		write_dat(0x18);
-		write_cmd(0x05); // normal display
+		write_dat(0x05);
 
 		write_cmd(0x20); // power control
 		write_dat(0x0b);
