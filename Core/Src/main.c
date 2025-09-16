@@ -41,6 +41,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+DCACHE_HandleTypeDef hdcache1;
+
+SPI_HandleTypeDef hspi6;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
@@ -52,6 +56,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ICACHE_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_DCACHE1_Init(void);
+static void MX_SPI6_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -92,6 +98,8 @@ int main(void)
   MX_GPIO_Init();
   MX_ICACHE_Init();
   MX_USART1_UART_Init();
+  MX_DCACHE1_Init();
+  MX_SPI6_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -101,6 +109,7 @@ int main(void)
   while (1)
   {
 	  HAL_GPIO_TogglePin(led_GPIO_Port,led_Pin);
+
 	  HAL_Delay(50);
     /* USER CODE END WHILE */
 
@@ -166,6 +175,33 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief DCACHE1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DCACHE1_Init(void)
+{
+
+  /* USER CODE BEGIN DCACHE1_Init 0 */
+
+  /* USER CODE END DCACHE1_Init 0 */
+
+  /* USER CODE BEGIN DCACHE1_Init 1 */
+
+  /* USER CODE END DCACHE1_Init 1 */
+  hdcache1.Instance = DCACHE1;
+  hdcache1.Init.ReadBurstType = DCACHE_READ_BURST_WRAP;
+  if (HAL_DCACHE_Init(&hdcache1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DCACHE1_Init 2 */
+
+  /* USER CODE END DCACHE1_Init 2 */
+
+}
+
+/**
   * @brief ICACHE Initialization Function
   * @param None
   * @retval None
@@ -190,6 +226,54 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 2 */
 
   /* USER CODE END ICACHE_Init 2 */
+
+}
+
+/**
+  * @brief SPI6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI6_Init(void)
+{
+
+  /* USER CODE BEGIN SPI6_Init 0 */
+
+  /* USER CODE END SPI6_Init 0 */
+
+  /* USER CODE BEGIN SPI6_Init 1 */
+
+  /* USER CODE END SPI6_Init 1 */
+  /* SPI6 parameter configuration*/
+  hspi6.Instance = SPI6;
+  hspi6.Init.Mode = SPI_MODE_MASTER;
+  hspi6.Init.Direction = SPI_DIRECTION_1LINE;
+  hspi6.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi6.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi6.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi6.Init.NSS = SPI_NSS_SOFT;
+  hspi6.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi6.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi6.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi6.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi6.Init.CRCPolynomial = 0x7;
+  hspi6.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi6.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+  hspi6.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+  hspi6.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+  hspi6.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+  hspi6.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+  hspi6.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+  hspi6.Init.IOSwap = SPI_IO_SWAP_ENABLE;
+  hspi6.Init.ReadyMasterManagement = SPI_RDY_MASTER_MANAGEMENT_INTERNALLY;
+  hspi6.Init.ReadyPolarity = SPI_RDY_POLARITY_HIGH;
+  if (HAL_SPI_Init(&hspi6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI6_Init 2 */
+
+  /* USER CODE END SPI6_Init 2 */
 
 }
 
@@ -256,8 +340,17 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LCD_RESET_GPIO_Port, LCD_RESET_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(led_GPIO_Port, led_Pin, GPIO_PIN_RESET);
@@ -268,12 +361,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(key_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : led_Pin */
-  GPIO_InitStruct.Pin = led_Pin;
+  /*Configure GPIO pins : LCD_CS_Pin LCD_RS_Pin */
+  GPIO_InitStruct.Pin = LCD_CS_Pin|LCD_RS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(led_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LCD_RESET_Pin led_Pin */
+  GPIO_InitStruct.Pin = LCD_RESET_Pin|led_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
