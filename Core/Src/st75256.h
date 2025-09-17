@@ -17,7 +17,7 @@ public:
 
 	void delay(int n) { HAL_Delay(n); }
 
-			//@formatter:on
+				//@formatter:on
 
 	void write_cmd(uint8_t c) {
 		cs(0);
@@ -43,12 +43,13 @@ public:
 		write_cmd(0x30);
 		write_cmd(0x94); // sleep out
 
+#if 0
 		write_cmd(0x31);
 		write_cmd(0xd7);
 		write_dat(0x9f); // auto read disable
 
 
-#if 0
+//#if 0
 
 		write_cmd(0x32); // analog set, booster freq and bias ratio
 		write_dat(0x00);
@@ -111,21 +112,40 @@ public:
 
 		//write_cmd(0xa7); // inverse
 
-
-#if 0
-
-
-
-
-
-		  //U8X8_C( 0x030 ),				/* select 00 commands */
-		  U8X8_CAA( 0x81, 0x18, 0x05 ),	/* Volume control */
-
-		  //U8X8_C( 0x030 ),				/* select 00 commands */
-		  U8X8_CA( 0x020, 0x00b ),		/* Power control: Regulator, follower & booster on */
-		  U8X8_DLY(100),
-#endif
 	}
+
+	void clear(uint8_t v) {
+		write_cmd(0x75); // rows
+		write_dat(0x00);
+		write_dat(0x28);
+
+		write_cmd(0x15); // cols
+		write_dat(0x00);
+		write_dat(0xff);
+
+		write_cmd(0x5c); // write data
+
+		for(int i=0;i<256*160/8;i++){
+			write_dat(v);
+		}
+
+	}
+	void load_img(uint8_t *p) {
+			write_cmd(0x75); // rows
+			write_dat(0x00);
+			write_dat(0x28);
+
+			write_cmd(0x15); // cols
+			write_dat(0x00);
+			write_dat(0xff);
+
+			write_cmd(0x5c); // write data
+
+			for(int i=0;i<256*160/8;i++){
+				write_dat(*p++);
+			}
+
+		}
 };
 #endif
 
